@@ -1,0 +1,49 @@
+alias: Light Switch/Dimmer based on Axis Video Motion Detection 4 (Axis VMD4)
+description: "This example uses Axis VMD4 on an Axis M3105 POE IP network camera as the primary trigger to run scripts to turn on outdoor front lights when motion is detected."
+trigger:
+  # If Axis VMD4 detects motion...
+  - platform: state
+    entity_id: binary_sensor.m3105_l_0_vmd4_camera1profileany
+    from: "off"
+    to: "on"
+condition:
+  # Verifying the sun is below the horizon...
+  - condition: numeric_state
+    entity_id: sun.sun
+    below: "-3.0"
+    value_template: "{{ state.attributes.elevation }}"
+action:
+  # Choose the following actions based on a time condition...
+  - choose:
+    # IF: Run this script before 9:00pm
+      - conditions:
+          - condition: template
+            value_template: "{{ now().hour < 21 }}"
+        sequence:
+          - service: script.turn_on
+            entity_id: script.turn_on_front
+    # ELSEIF: Run this script between 9:00 and 10:00pm
+      - conditions:
+          - condition: template
+            value_template: "{{ now().hour < 22 }}"
+        sequence:
+          - service: script.turn_on
+            entity_id: script.turn_on_dim
+    # ELSE: otherwise, run this script (after 10:00pm)
+    default:
+      - service: script.turn_on
+        entity_id: script.turn_on_sleep
+    # Then wait for VMD 4 to stop detecting motion
+  - wait_for_trigger:
+      platform: state
+      entity_id: binary_sensor.m3105_l_0_vmd4_camera1profileany
+      from: "on"
+      to: "off"
+    # Delay next action for a random time between 2 to 10 minutes
+  - delay:
+      minutes: "{{ range(2, 10)|random }}"
+    # Turn off light
+  - service: script.turn_on
+    entity_id: script.turn_off_front
+# If VMD4 detects motion again, during the delay, restart this automation again
+mode: restart
