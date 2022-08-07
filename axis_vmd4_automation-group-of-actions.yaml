@@ -1,4 +1,4 @@
-alias: Light Switch/Dimmer based on Axis Video Motion Detection 4 (Axis VMD4)
+alias: Axis Video Motion Detection 4 (Axis VMD4) Scripted Group of Actions
 description: "This example uses Axis VMD4 on an Axis M3105 POE IP network camera as the primary trigger to run scripts to turn on outdoor front lights when motion is detected. This automation is based off of the following documentation: https://www.home-assistant.io/docs/scripts/#choose-a-group-of-actions"
 trigger:
   # If Axis VMD4 detected motion (state goes from off to on)... Documentation: https://www.home-assistant.io/integrations/axis/
