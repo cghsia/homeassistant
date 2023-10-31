@@ -10,3 +10,6 @@ This automation is based off of the following HA documentation: https://www.home
 
 ## node-red_axis_vmd4.json
 More or less the same as axis_vmd4_automation-group-of-actions.yaml but done in Node-Red
+
+## node-red_axis_vmd4-email-notification.json
+More or less the same as node-red_axis_vmd4.json but with email notification along with picture attachment when Axis VMD4 detected motion. Clean JSON without secrets/authentication information.
